@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: test-backend:latest
+    ports:
+      - "4000:4000"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker

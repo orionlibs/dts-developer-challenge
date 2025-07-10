@@ -1,0 +1,32 @@
+name: Publish OpenAPI specs
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  publish-openapi:
+    runs-on: ubuntu-latest # Define the runner environment
+    steps:
+      # 1. Check out your repository's code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Set up the specified Java version
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21' # The java_version you were passing before
+          distribution: 'temurin'
+
+      # 3. Make the Gradle wrapper executable (THE FIX)
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      # 4. Run the OpenAPI publisher test using Gradle
+      - name: Publish OpenAPI Spec
+        env:
+          # Make the secret available as an environment variable for the Gradle command
+          SWAGGER_PUBLISHER_API_TOKEN: ${{ secrets.SWAGGER_PUBLISHER_API_TOKEN }}
+        run: ./gradlew test --tests "uk.gov.hmcts.reform.dev.openapi.OpenAPIPublisherTest"

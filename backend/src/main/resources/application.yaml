@@ -1,0 +1,54 @@
+server:
+  port: 4000
+  shutdown: "graceful"
+  error:
+    include-binding-errors: always
+    include-message: always
+    include-stacktrace: never
+
+
+management:
+  endpoint:
+    health:
+      show-details: "always"
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health
+
+springdoc:
+  packagesToScan: uk.gov.hmcts.reform.dev.cases.api
+  writer-with-order-by-keys: true
+  api-docs:
+    path: /api/docs
+  swagger-ui:
+    path: /api/swagger-ui
+
+spring:
+  config:
+    import: "optional:configtree:/mnt/secrets/test/"
+  application:
+    name: Dev Test
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS CASES
+    username: sa
+    password:
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 10
+      idleTimeout: 10000
+      maxLifetime: 1800000
+      connectionTimeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: update
+      jdbc:
+        lob:
+          non_contextual_creation: true
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
